@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Telegram-бот заявок для бизнеса в вашем городе — за 24 часа</title>
+  <meta name="description" content="Сделаю Telegram-бота заявок: кнопка, контакт, антиспам, Google Sheets, уведомления в Telegram. За 24 часа. Ваш город." />
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f1a33; --text:#eaf0ff; --muted:#b7c2e0;
+      --accent:#5eead4; --accent2:#60a5fa; --danger:#fb7185;
+      --ring: rgba(94,234,212,.25);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(96,165,250,.25), transparent 60%),
+                  radial-gradient(1000px 700px at 90% 10%, rgba(94,234,212,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{max-width:1080px;margin:0 auto;padding:22px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:.2px}
+    .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .nav a{opacity:.9;text-decoration:none}
+    .nav .links{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+    .hero{padding:46px 0 20px;display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+    @media (max-width: 900px){.hero{grid-template-columns:1fr;padding-top:26px}}
+    h1{font-size:44px;line-height:1.05;margin:0 0 14px}
+    @media (max-width: 900px){h1{font-size:36px}}
+    .sub{color:var(--muted);font-size:18px;line-height:1.5;margin:0 0 18px}
+    .pillrow{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+    .pill{
+      font-size:13px;color:var(--text);opacity:.92;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+      padding:7px 10px;border-radius:999px
+    }
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:12px 14px;border-radius:12px;text-decoration:none;font-weight:700;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06);
+      box-shadow:0 0 0 0 rgba(0,0,0,0);
+      transition:.15s transform,.15s box-shadow,.15s background,.15s border;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 0 0 6px var(--ring);border-color:rgba(94,234,212,.35)}
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(94,234,212,.22), rgba(96,165,250,.18));
+      border-color:rgba(94,234,212,.28)
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px; padding:18px;
+      box-shadow: 0 16px 60px rgba(0,0,0,.35);
+    }
+    .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .kpi .mini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px}
+    .kpi .n{font-size:18px;font-weight:900}
+    .kpi .t{color:var(--muted);font-size:13px;margin-top:4px}
+    .section{padding:22px 0}
+    h2{font-size:26px;margin:0 0 12px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width: 900px){.grid3{grid-template-columns:1fr}}
+    .feat{padding:14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09)}
+    .feat b{display:block;margin-bottom:6px}
+    .feat p{margin:0;color:var(--muted);line-height:1.5}
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width: 900px){.pricing{grid-template-columns:1fr}}
+    .price{position:relative}
+    .tag{
+      position:absolute;top:12px;right:12px;font-size:12px;font-weight:800;
+      background:rgba(94,234,212,.14);border:1px solid rgba(94,234,212,.28);
+      padding:6px 10px;border-radius:999px
+    }
+    .price h3{margin:0 0 6px}
+    .sum{font-size:28px;font-weight:950;margin:0 0 10px}
+    .ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.55}
+    .ul li{margin:6px 0}
+    .faq details{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px}
+    .faq summary{cursor:pointer;font-weight:800}
+    .faq p{color:var(--muted);line-height:1.55;margin:10px 0 0}
+    .footer{padding:26px 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand"><span class="dot"></span> БотЗаявок <span style="opacity:.7;font-weight:700">в вашем городе</span></div>
+      <div class="links">
+        <a href="#how">Как работает</a>
+        <a href="#pricing">Цены</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn primary" href="#contact">Получить демо</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1>Telegram-бот заявок<br>за <span style="color:var(--accent)">24 часа</span></h1>
+        <p class="sub">
+          Клиент жмёт кнопку → отправляет контакт → заявка падает в <b>Google Sheets</b> + приходит уведомление в Telegram.
+          Антиспам, кнопки, “защита от дурака”. Делается под ваш бизнес и ваш город.
+        </p>
+
+        <div class="pillrow">
+          <span class="pill">✅ Кнопка “Оставить заявку”</span>
+          <span class="pill">✅ Контакт одним тапом</span>
+          <span class="pill">✅ Антиспам</span>
+          <span class="pill">✅ Таблица лидов</span>
+          <span class="pill">✅ Уведомления менеджерам</span>
+          <span class="pill">✅ Кнопки и сценарии под вас: выше конверсия, меньше ручной переписки</span>
+        </div>
+
+        <div class="ctaRow" id="contact">
+  <a class="btn primary" href="https://t.me/akamanah111" target="_blank" rel="noopener">💬 Написать в Telegram</a>
+  <a class="btn" href="tel:+79243152971">📞 Позвонить</a>
+</div>
+
+        <div class="kpi">
+          <div class="mini">
+            <div class="n">24–48 часов</div>
+            <div class="t">Срок внедрения</div>
+          </div>
+          <div class="mini">
+            <div class="n">от 9 999 ₽</div>
+            <div class="t">Готовый пакет</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 10px">Демо за 30 секунд</h2>
+        <p class="sub" style="margin:0 0 14px">
+          Напишите “ЗАЯВКИ” — пришлю пример бота и покажу, как заявка падает в таблицу.
+        </p>
+        <div class="feat">
+          <b>Что вам нужно отдать мне</b>
+          <p>1) что продаёте (1–2 предложения)<br>2) кто получает уведомления<br>3) поля заявки (обычно имя/телефон/город/коммент)</p>
+        </div>
+        <div style="height:10px"></div>
+        <div class="feat">
+          <b>Что получаете</b>
+          <p>бот + кнопки + таблица лидов + уведомления + инструкция + поддержка</p>
+        </div>
+        <div style="height:14px"></div>
+        <div class="feat">
+          <b>Оплата</b>
+          <p>50% предоплата — старт. 50% после демо. Чек/договор по запросу.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="how">
+      <h2>Как работает</h2>
+      <div class="grid3">
+        <div class="feat"><b>1) Клиент тыкает кнопку</b><p>“Оставить заявку” — без /start и без лишних команд.</p></div>
+        <div class="feat"><b>2) Контакт одним нажатием</b><p>Номер не вводят руками → меньше ошибок → больше лидов.</p></div>
+        <div class="feat"><b>3) Всё сохраняется</b><p>Google Sheets + уведомления менеджеру в Telegram. Ничего не теряется.</p></div>
+      </div>
+    </div>
+
+    <div class="section" id="pricing">
+      <h2>Цены</h2>
+      <div class="pricing">
+        <div class="card price">
+          <h3>Старт</h3>
+          <div class="sum">9 900 ₽</div>
+          <ul class="ul">
+            <li>1 бот + 1 таблица</li>
+            <li>Кнопка заявки + контакт</li>
+            <li>Уведомление 1 человеку</li>
+            <li>Инструкция</li>
+          </ul>
+        </div>
+
+        <div class="card price">
+          <div class="tag">Популярно</div>
+          <h3>Бизнес</h3>
+          <div class="sum">19 900 ₽</div>
+          <ul class="ul">
+            <li>До 3 менеджеров (уведомления)</li>
+            <li>Доп. поля (услуга/район/время)</li>
+            <li>Текст/оформление под нишу</li>
+            <li>7 дней поддержки</li>
+          </ul>
+        </div>
+
+        <div class="card price">
+          <h3>Про</h3>
+          <div class="sum">39 900 ₽</div>
+          <ul class="ul">
+            <li>Интеграция CRM/вторая таблица</li>
+            <li>Отчётность/метки источников</li>
+            <li>14 дней поддержки</li>
+          </ul>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:12px">
+  *Цены можно поджать под твой рынок в городе. Главное — продавать пакетами.
+</p>
+    </div>
+
+    <div class="section faq" id="faq">
+      <h2>FAQ</h2>
+      <div style="display:grid;gap:10px">
+        <details>
+          <summary>Сколько времени занимает?</summary>
+          <p>Обычно 24–48 часов: настройка, тест, инструкция, запуск.</p>
+        </details>
+        <details>
+          <summary>Можно под несколько менеджеров?</summary>
+          <p>Да, в “Бизнес/Про” уведомления можно отправлять нескольким людям.</p>
+        </details>
+        <details>
+          <summary>Что если клиент пишет “привет”, а не нажимает кнопки?</summary>
+          <p>Есть мягкая подсказка (не спамит): бот направляет на кнопку заявки.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>© <span id="y"></span> БотЗаявок • <span class="mono">Владивосток</span></div>
+      <div class="mono">Telegram: @AKAMANAH111 • WhatsApp: +7 924 315 29 71 </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
